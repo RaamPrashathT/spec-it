@@ -22,7 +22,7 @@
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["UserHub", "Run", "Pairing"] }],
   "vars": {
     // Public id of your GitHub OAuth app.
-    "GITHUB_CLIENT_ID": "",
+    "GITHUB_CLIENT_ID": "Ov23li9FBWhfKcCxVyNM",
     // https://<modal-workspace>--spec-it-runner-launch.modal.run once the Modal app is deployed. Empty = API-key mode off.
     "MODAL_LAUNCH_URL": ""
   }
