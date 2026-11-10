@@ -1,4 +1,7 @@
 // Claude Code through the Claude Agent SDK. Uses the developer's Claude Code login, or an API key.
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { query } from "@anthropic-ai/claude-agent-sdk";
 import { buildKickoff } from "../prompt.mjs";
 import { normalizeLimits } from "../agent-info.mjs";
@@ -35,7 +38,11 @@ export class ClaudeSdkAdapter {
   async start() {
     const s = this.s;
     const env = { ...process.env };
-    if (s.authMode === "apiKey") env.ANTHROPIC_API_KEY = this.apiKey;
+    if (s.authMode === "apiKey") {
+      env.ANTHROPIC_API_KEY = this.apiKey;
+      // Key only: an empty config dir stops Claude Code from falling back to a saved claude.ai login on this machine.
+      env.CLAUDE_CONFIG_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "spec-it-claude-"));
+    }
     else delete env.ANTHROPIC_API_KEY; // CLI-login mode: never fall back to a stray key
 
     const skillScripts = this.skillDir.replaceAll("\\", "/") + "/scripts/";

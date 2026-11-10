@@ -23,6 +23,9 @@ if (argv.includes("--help") || argv.includes("-h")) {
 Usage: run it inside your project folder.
   spec-it [options]
 
+  spec-it connect <CODE> --server <url>   link this computer to the hosted web app
+  spec-it connect                         reconnect a computer that's already linked
+
 Options:
   --project <dir>   project to write spec-it/ into (default: current folder)
   --port <n>        port on 127.0.0.1 (default: 4317, or a free one if taken)
@@ -34,6 +37,23 @@ Options:
 Agents: Claude Code, Codex, Gemini CLI, Copilot CLI, OpenCode, Cursor, Qwen, Goose,
 or any ACP agent. Uses their existing login, or an API key you paste in the app.`);
   process.exit(0);
+}
+
+// Hosted web app: `spec-it connect [CODE] --server URL` pairs this computer; `run-remote` runs inside a cloud sandbox.
+if (argv[0] === "connect" || argv[0] === "run-remote") {
+  const { connect, runRemote } = await import("../src/remote.mjs");
+  try {
+    if (argv[0] === "connect") {
+      const code = argv[1] && !argv[1].startsWith("--") ? argv[1] : undefined;
+      await connect({ code, server: flag("server", process.env.SPEC_IT_SERVER), project: flag("project") });
+    } else {
+      await runRemote({ server: flag("server"), runId: flag("run"), token: flag("token") });
+    }
+  } catch (err) {
+    console.error(`\n  ${err.message}\n`);
+    process.exit(1);
+  }
+  await new Promise(() => {}); // connect runs until Ctrl+C
 }
 
 const skillDir = resolveSkillDir(flag("skill"));

@@ -7,6 +7,13 @@
       "runtimeArgs": ["cli-app/bin/spec-it-app.mjs", "--no-open", "--port", "4317"],
       "env": { "SPEC_IT_TOKEN": "dev-local-token" },
       "port": 4317
+    },
+    {
+      "name": "spec-it-web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "dev", "--config", "web-app/wrangler.jsonc", "--port", "8790", "--ip", "127.0.0.1"],
+      "port": 8790,
+      "autoPort": false
     }
   ]
 }

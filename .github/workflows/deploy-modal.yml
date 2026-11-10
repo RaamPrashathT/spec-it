@@ -1,0 +1,61 @@
+# Deploys the API-key cloud runner (web-app/modal/runner.py) to Modal on every push to main.
+# Repo secrets needed (Settings → Secrets and variables → Actions):
+#   MODAL_TOKEN_ID, MODAL_TOKEN_SECRET  – from modal.com → Settings → API Tokens
+#   LAUNCH_SECRET                       – shared with the Cloudflare Worker (same value as its LAUNCH_SECRET)
+#   SERVER_ORIGIN                       – the Worker's URL, e.g. https://spec-it.<you>.workers.dev
+name: Deploy Modal runner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web-app/modal/**"
+      - "cli-app/src/**"
+      - "cli-app/bin/**"
+      - "cli-app/package.json"
+      - "cli-app/package-lock.json"
+      - ".claude/skills/spec-it/**"
+      - ".github/workflows/deploy-modal.yml"
+  workflow_dispatch:
+
+concurrency: deploy-modal
+
+jobs:
+  # Skip cleanly until the Modal secrets are added (API-key mode stays off until then).
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.s.outputs.ready }}
+    steps:
+      - id: s
+        env:
+          A: ${{ secrets.MODAL_TOKEN_ID }}
+          B: ${{ secrets.MODAL_TOKEN_SECRET }}
+          C: ${{ secrets.LAUNCH_SECRET }}
+          D: ${{ secrets.SERVER_ORIGIN }}
+        run: |
+          if [ -n "$A" ] && [ -n "$B" ] && [ -n "$C" ] && [ -n "$D" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::Modal secrets not set yet; skipping the runner deploy."; echo "ready=false" >> "$GITHUB_OUTPUT"; fi
+
+  deploy:
+    needs: check
+    if: needs.check.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install modal
+      - name: Store launcher secret in Modal
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+          LAUNCH_SECRET: ${{ secrets.LAUNCH_SECRET }}
+          SERVER_ORIGIN: ${{ secrets.SERVER_ORIGIN }}
+        run: modal secret create spec-it-launcher LAUNCH_SECRET="$LAUNCH_SECRET" SERVER_ORIGIN="$SERVER_ORIGIN" --force
+      - name: Deploy
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: modal deploy web-app/modal/runner.py

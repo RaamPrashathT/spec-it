@@ -34,8 +34,9 @@ export function resolveSkillDir(explicit) {
   return candidates.find((d) => fs.existsSync(path.join(d, "SKILL.md"))) ?? null;
 }
 
-export function startServer({ port = 4317, skillDir, defaultProject = process.cwd() }) {
-  const token = process.env.SPEC_IT_TOKEN || randomBytes(18).toString("base64url"); // fixed token: dev only
+export function startServer({ port = 4317, skillDir, defaultProject = process.cwd(), token: fixedToken } = {}) {
+  // fixedToken: the headless runner (src/remote.mjs) drives this server with its own token. SPEC_IT_TOKEN: dev only.
+  const token = fixedToken || process.env.SPEC_IT_TOKEN || randomBytes(18).toString("base64url");
   const sessions = new Map();
 
   const tokenOk = (t) => {

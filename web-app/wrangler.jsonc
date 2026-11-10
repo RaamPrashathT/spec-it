@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "spec-it",
+  "main": "worker/src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "observability": { "enabled": true },
+  // The React UI (ui/dist). API, sign-in, WebSockets and spec files go to the Worker first.
+  "assets": {
+    "directory": "./ui/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/auth/*", "/ws", "/ws/*", "/files/*"]
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "USER_HUB", "class_name": "UserHub" },
+      { "name": "RUN", "class_name": "Run" },
+      { "name": "PAIRING", "class_name": "Pairing" }
+    ]
+  },
+  // SQLite-backed Durable Objects work on the Workers Free plan.
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["UserHub", "Run", "Pairing"] }],
+  "vars": {
+    // Public id of your GitHub OAuth app.
+    "GITHUB_CLIENT_ID": "",
+    // https://<modal-workspace>--spec-it-runner-launch.modal.run once the Modal app is deployed. Empty = API-key mode off.
+    "MODAL_LAUNCH_URL": ""
+  }
+  // Secrets (set with `npx wrangler secret put NAME`): GITHUB_CLIENT_SECRET, SESSION_SECRET, LAUNCH_SECRET
+}

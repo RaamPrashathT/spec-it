@@ -18,3 +18,7 @@ test-projects/0*/
 Thumbs.db
 .vscode/
 .idea/
+
+# Cloudflare local dev
+.dev.vars
+.wrangler/

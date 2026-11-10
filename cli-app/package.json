@@ -1,6 +1,6 @@
 {
   "name": "spec-it-app",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Turn an idea into a buildable REQUIREMENTS.md and clickable mockups, using the coding agent you already have (Claude Code, Codex, Gemini CLI, Copilot, OpenCode, any ACP agent) or an API key.",
   "keywords": [
     "requirements",
