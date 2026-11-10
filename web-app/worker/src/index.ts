@@ -91,7 +91,7 @@ async function authed(req: Request, env: Env, user: User, url: URL): Promise<Res
   if (p === "/api/connectors" && req.method === "GET") return json(await h.listConnectors())
   if (p === "/api/connectors/pair" && req.method === "POST") {
     const { code, expires } = await pairing(env).create(user.uid, user.login)
-    return json({ code, expires, command: `npx spec-it-app connect ${code} --server ${url.origin}` })
+    return json({ code, expires, command: `npx -y spec-it-app@0.2 connect ${code} --server ${url.origin}` })
   }
   let m = /^\/api\/connectors\/([a-f0-9]+)\/(remove|config|pick-folder)$/.exec(p)
   if (m && req.method === "POST") {

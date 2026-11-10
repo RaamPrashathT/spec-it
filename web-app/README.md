@@ -60,7 +60,7 @@ Until then, the app shows API-key mode as "Coming soon".
 
 ### 4. Publish the connector
 
-`spec-it connect` ships in `spec-it-app` 0.2.0. Run `cd cli-app && npm publish` once, so the pairing command `npx spec-it-app connect …` works for everyone.
+`spec-it connect` ships in `spec-it-app` 0.2.0. Run `cd cli-app && npm publish` once, so the pairing command `npx -y spec-it-app@0.2 connect …` works for everyone.
 
 ## Develop locally
 
