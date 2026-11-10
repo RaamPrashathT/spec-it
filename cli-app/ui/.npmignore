@@ -1,0 +1,4 @@
+# Only the production build ships in the npm package; the React source stays in the repo.
+*
+!dist/
+!dist/**

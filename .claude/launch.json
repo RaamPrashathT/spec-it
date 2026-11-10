@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "spec-it-app",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["cli-app/bin/spec-it-app.mjs", "--no-open", "--port", "4317"],
+      "env": { "SPEC_IT_TOKEN": "dev-local-token" },
+      "port": 4317
+    }
+  ]
+}

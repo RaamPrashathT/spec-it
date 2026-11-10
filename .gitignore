@@ -1,0 +1,20 @@
+# Dependencies and build output
+node_modules/
+dist/
+*.tgz
+
+# Generated: copied from .claude/skills/spec-it by `npm run sync-skill` (cli-app/skill)
+cli-app/skill/
+
+# Eval runs and fixture projects (each fixture keeps its own git history)
+test-projects/_runs/
+test-projects/0*/
+
+# Local / OS
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
